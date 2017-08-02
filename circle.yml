@@ -1,7 +1,14 @@
 dependencies:
   pre:
+    - npm install -g now
     - sudo apt-get install jq
     - wget -O ~/codacy-coverage-reporter.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
+deployment:
+  production:
+    branch: master
+    commands:
+      - now --public --token=${NOW_TOKEN} deploy
+      - now --token=${NOW_TOKEN} alias
 machine:
   java:
     version: openjdk8
