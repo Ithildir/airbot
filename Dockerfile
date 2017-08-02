@@ -4,4 +4,4 @@ MAINTAINER Andrea Di Giorgi <adigiorgi@outlook.com>
 COPY . /opt/airbot
 WORKDIR /opt/airbot
 EXPOSE 8080
-CMD ["./gradlew", "run", "--no-daemon"]
+ENTRYPOINT ["./gradlew", "run", "--no-daemon"]
