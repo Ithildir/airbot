@@ -20,33 +20,38 @@
  * SOFTWARE.
  */
 
-package com.github.ithildir.airbot.service;
+package com.github.ithildir.airbot;
 
-import com.github.ithildir.airbot.model.Location;
+import com.github.ithildir.airbot.constants.ConfigKeys;
+import com.github.ithildir.airbot.service.GeoService;
+import com.github.ithildir.airbot.service.impl.MapQuestGeoServiceImpl;
 
-import io.vertx.codegen.annotations.ProxyGen;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author Andrea Di Giorgi
  */
-@ProxyGen
-public interface GeoService {
+public class GeoServiceVerticle extends BaseServiceVerticle<GeoService> {
 
-	public static final String ADDRESS = GeoService.class.getName();
-
-	public static GeoService getInstance(Vertx vertx) {
-		return ProxyHelper.createProxy(GeoService.class, vertx, ADDRESS);
+	@Override
+	protected String getAddress() {
+		return GeoService.ADDRESS;
 	}
 
-	public void getLocationByCoordinates(
-		double latitude, double longitude,
-		Handler<AsyncResult<Location>> handler);
+	@Override
+	protected GeoService getServiceImpl(JsonObject configJsonObject) {
+		String key = configJsonObject.getString(ConfigKeys.MAPQUEST_KEY);
+		boolean open = configJsonObject.getBoolean(
+			ConfigKeys.MAPQUEST_OPEN, _DEFAULT_MAPQUEST_OPEN);
 
-	public void getLocationByQuery(
-		String query, Handler<AsyncResult<Location>> handler);
+		return new MapQuestGeoServiceImpl(vertx, key, open);
+	}
+
+	@Override
+	protected Class<GeoService> getServiceInterface() {
+		return GeoService.class;
+	}
+
+	private static final boolean _DEFAULT_MAPQUEST_OPEN = true;
 
 }

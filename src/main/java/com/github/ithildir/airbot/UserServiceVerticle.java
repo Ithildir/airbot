@@ -20,33 +20,31 @@
  * SOFTWARE.
  */
 
-package com.github.ithildir.airbot.service;
+package com.github.ithildir.airbot;
 
-import com.github.ithildir.airbot.model.Location;
+import com.github.ithildir.airbot.service.UserService;
+import com.github.ithildir.airbot.service.impl.DummyUserServiceImpl;
 
-import io.vertx.codegen.annotations.ProxyGen;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author Andrea Di Giorgi
  */
-@ProxyGen
-public interface GeoService {
+public class UserServiceVerticle extends BaseServiceVerticle<UserService> {
 
-	public static final String ADDRESS = GeoService.class.getName();
-
-	public static GeoService getInstance(Vertx vertx) {
-		return ProxyHelper.createProxy(GeoService.class, vertx, ADDRESS);
+	@Override
+	protected String getAddress() {
+		return UserService.ADDRESS;
 	}
 
-	public void getLocationByCoordinates(
-		double latitude, double longitude,
-		Handler<AsyncResult<Location>> handler);
+	@Override
+	protected UserService getServiceImpl(JsonObject configJsonObject) {
+		return new DummyUserServiceImpl();
+	}
 
-	public void getLocationByQuery(
-		String query, Handler<AsyncResult<Location>> handler);
+	@Override
+	protected Class<UserService> getServiceInterface() {
+		return UserService.class;
+	}
 
 }

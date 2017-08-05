@@ -34,19 +34,19 @@ import io.vertx.serviceproxy.ProxyHelper;
  * @author Andrea Di Giorgi
  */
 @ProxyGen
-public interface GeoService {
+public interface UserService {
 
-	public static final String ADDRESS = GeoService.class.getName();
+	public static final String ADDRESS = UserService.class.getName();
 
-	public static GeoService getInstance(Vertx vertx) {
-		return ProxyHelper.createProxy(GeoService.class, vertx, ADDRESS);
+	public static UserService getInstance(Vertx vertx) {
+		return ProxyHelper.createProxy(UserService.class, vertx, ADDRESS);
 	}
 
-	public void getLocationByCoordinates(
-		double latitude, double longitude,
-		Handler<AsyncResult<Location>> handler);
+	public void getUserLocation(
+		String userId, Handler<AsyncResult<Location>> handler);
 
-	public void getLocationByQuery(
-		String query, Handler<AsyncResult<Location>> handler);
+	public void updateUserLocation(
+		String userId, double latitude, double longitude, String country,
+		Handler<AsyncResult<Void>> handler);
 
 }

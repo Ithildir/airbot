@@ -20,39 +20,44 @@
  * SOFTWARE.
  */
 
-package com.github.ithildir.airbot;
+package com.github.ithildir.airbot.service.impl;
 
-import com.github.ithildir.airbot.constants.ConfigKeys;
-import com.github.ithildir.airbot.service.GeoService;
-import com.github.ithildir.airbot.service.impl.MapQuestGeoServiceImpl;
+import com.github.ithildir.airbot.model.Location;
+import com.github.ithildir.airbot.service.UserService;
 
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Andrea Di Giorgi
  */
-public class MapQuestGeoServiceVerticle
-	extends BaseServiceVerticle<GeoService> {
+public class DummyUserServiceImpl implements UserService {
 
 	@Override
-	protected String getAddress() {
-		return GeoService.ADDRESS;
+	public void getUserLocation(
+		String userId, Handler<AsyncResult<Location>> handler) {
+
+		Location location = _userLocationsMap.get(userId);
+
+		handler.handle(Future.succeededFuture(location));
 	}
 
 	@Override
-	protected GeoService getServiceImpl(JsonObject configJsonObject) {
-		String key = configJsonObject.getString(ConfigKeys.MAPQUEST_KEY);
-		boolean open = configJsonObject.getBoolean(
-			ConfigKeys.MAPQUEST_OPEN, _DEFAULT_MAPQUEST_OPEN);
+	public void updateUserLocation(
+		String userId, double latitude, double longitude, String country,
+		Handler<AsyncResult<Void>> handler) {
 
-		return new MapQuestGeoServiceImpl(vertx, key, open);
+		Location location = new Location(latitude, longitude, country);
+
+		_userLocationsMap.put(userId, location);
+
+		handler.handle(Future.succeededFuture());
 	}
 
-	@Override
-	protected Class<GeoService> getServiceInterface() {
-		return GeoService.class;
-	}
-
-	private static final boolean _DEFAULT_MAPQUEST_OPEN = true;
+	private final Map<String, Location> _userLocationsMap = new HashMap<>();
 
 }
