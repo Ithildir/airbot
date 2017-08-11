@@ -48,11 +48,9 @@ public abstract class BaseServiceVerticle<T> extends AbstractVerticle {
 
 				JsonObject configJsonObject = asyncResult.result();
 
-				_messageConsumer = ProxyHelper.registerService(
-					getServiceInterface(), vertx,
-					getServiceImpl(configJsonObject), getAddress());
+				Future<Void> future = start(configJsonObject);
 
-				startFuture.complete();
+				future.setHandler(startFuture);
 			});
 	}
 
@@ -66,6 +64,14 @@ public abstract class BaseServiceVerticle<T> extends AbstractVerticle {
 	protected abstract T getServiceImpl(JsonObject configJsonObject);
 
 	protected abstract Class<T> getServiceInterface();
+
+	protected Future<Void> start(JsonObject configJsonObject) {
+		_messageConsumer = ProxyHelper.registerService(
+			getServiceInterface(), vertx, getServiceImpl(configJsonObject),
+			getAddress());
+
+		return Future.succeededFuture();
+	}
 
 	private MessageConsumer<JsonObject> _messageConsumer;
 

@@ -25,6 +25,7 @@ package com.github.ithildir.airbot;
 import com.github.ithildir.airbot.service.MeasurementService;
 
 import io.vertx.core.Future;
+import io.vertx.core.json.JsonObject;
 import io.vertx.serviceproxy.ProxyHelper;
 
 /**
@@ -34,38 +35,41 @@ public abstract class BaseMeasurementServiceVerticle
 	extends BaseServiceVerticle<MeasurementService> {
 
 	@Override
-	public void start(Future<Void> startFuture) throws Exception {
-		Future<Void> future = Future.future();
-
-		super.start(future);
-
-		future = future.compose(
-			v -> {
-				return _init();
-			});
-
-		future.setHandler(
-			asyncResult -> {
-				if (asyncResult.failed()) {
-					startFuture.fail(asyncResult.cause());
-
-					return;
-				}
-
-				startFuture.complete();
-			});
-	}
-
-	@Override
 	protected String getAddress() {
 		return MeasurementService.getAddress(getCountry());
 	}
 
 	protected abstract String getCountry();
 
+	protected long getInitInterval() {
+		return 0;
+	}
+
 	@Override
 	protected Class<MeasurementService> getServiceInterface() {
 		return MeasurementService.class;
+	}
+
+	@Override
+	protected Future<Void> start(JsonObject configJsonObject) {
+		Future<Void> future = super.start(configJsonObject);
+
+		future = future.compose(
+			v -> {
+				return _init();
+			});
+
+		long initInterval = getInitInterval();
+
+		if (initInterval > 0) {
+			vertx.setPeriodic(
+				initInterval,
+				timerId -> {
+					_init();
+				});
+		}
+
+		return future;
 	}
 
 	private Future<Void> _init() {

@@ -39,6 +39,11 @@ public class AirNowMeasurementServiceVerticle
 	}
 
 	@Override
+	protected long getInitInterval() {
+		return 30 * 60 * 1000;
+	}
+
+	@Override
 	protected MeasurementService getServiceImpl(JsonObject configJsonObject) {
 		return new AirNowMeasurementServiceImpl(vertx);
 	}
