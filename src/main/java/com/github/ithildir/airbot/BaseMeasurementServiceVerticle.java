@@ -54,19 +54,12 @@ public abstract class BaseMeasurementServiceVerticle
 	protected Future<Void> start(JsonObject configJsonObject) {
 		Future<Void> future = super.start(configJsonObject);
 
-		future = future.compose(
-			v -> {
-				return _init();
-			});
+		future = future.compose(v -> _init());
 
 		long initInterval = getInitInterval();
 
 		if (initInterval > 0) {
-			vertx.setPeriodic(
-				initInterval,
-				timerId -> {
-					_init();
-				});
+			vertx.setPeriodic(initInterval, timerId -> _init());
 		}
 
 		return future;

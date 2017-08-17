@@ -192,9 +192,7 @@ public class GetAirQualityApiAiFulfillmentBuilder
 		_geoService.getLocationByQuery(query, locationFuture);
 
 		return locationFuture.compose(
-			location -> {
-				return _buildFulfillment(locale, query, location);
-			});
+			location -> _buildFulfillment(locale, query, location));
 	}
 
 	private Future<Fulfillment> _buildUserFulfillment(
