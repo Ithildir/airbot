@@ -40,7 +40,7 @@ public class AirNowMeasurementServiceVerticle
 
 	@Override
 	protected long getInitInterval() {
-		return 30 * 60 * 1000;
+		return 5 * 60 * 1000;
 	}
 
 	@Override
