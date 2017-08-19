@@ -38,6 +38,8 @@ import io.vertx.core.Verticle;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.auth.AuthProvider;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
@@ -75,6 +77,10 @@ public class AirBotVerticle extends AbstractVerticle {
 					startFuture.fail(asyncResult.cause());
 
 					return;
+				}
+
+				if (_logger.isInfoEnabled()) {
+					_logger.info("AirBot started succesfully");
 				}
 
 				startFuture.complete();
@@ -150,5 +156,8 @@ public class AirBotVerticle extends AbstractVerticle {
 	private static final int _DEFAULT_PORT = 8080;
 
 	private static final String[] _MEASUREMENT_SERVICE_COUNTRIES = {"US"};
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		AirBotVerticle.class);
 
 }
