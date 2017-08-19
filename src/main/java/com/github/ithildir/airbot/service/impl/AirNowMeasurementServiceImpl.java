@@ -115,8 +115,8 @@ public class AirNowMeasurementServiceImpl implements MeasurementService {
 				if (_reportingAreaETag.equals(etag)) {
 					if (_logger.isDebugEnabled()) {
 						_logger.debug(
-							"Reporting area records are already up-to-date " +
-								"with ETag {0}",
+							"AirNow reporting area records are already " +
+								"up-to-date with ETag {0}",
 							etag);
 					}
 
@@ -235,9 +235,9 @@ public class AirNowMeasurementServiceImpl implements MeasurementService {
 				_reportingAreaETag = httpResponse.getHeader(
 					HttpHeaders.ETAG.toString());
 
-				if (_logger.isDebugEnabled()) {
-					_logger.debug(
-						"Reporting area records updated with ETag {0}",
+				if (_logger.isInfoEnabled()) {
+					_logger.info(
+						"AirNow reporting area records updated with ETag {0}",
 						_reportingAreaETag);
 				}
 
