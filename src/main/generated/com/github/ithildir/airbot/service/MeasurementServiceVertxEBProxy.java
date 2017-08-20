@@ -83,6 +83,23 @@ public class MeasurementServiceVertxEBProxy implements MeasurementService {
     });
   }
 
+  public void getName(Handler<AsyncResult<String>> handler) {
+    if (closed) {
+      handler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
+    }
+    JsonObject _json = new JsonObject();
+    DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "getName");
+    _vertx.eventBus().<String>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        handler.handle(Future.failedFuture(res.cause()));
+      } else {
+        handler.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
+  }
+
   public void init(Handler<AsyncResult<Void>> handler) {
     if (closed) {
       handler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));

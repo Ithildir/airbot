@@ -138,6 +138,10 @@ public class MeasurementServiceVertxProxyHandler extends ProxyHandler {
          });
           break;
         }
+        case "getName": {
+          service.getName(createHandler(msg));
+          break;
+        }
         case "init": {
           service.init(createHandler(msg));
           break;

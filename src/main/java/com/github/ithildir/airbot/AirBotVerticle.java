@@ -24,11 +24,12 @@ package com.github.ithildir.airbot;
 
 import com.github.ithildir.airbot.constants.ConfigKeys;
 import com.github.ithildir.airbot.server.SingleUserAuthProvider;
+import com.github.ithildir.airbot.server.api.ai.AirQualityApiAiFulfillmentBuilder;
 import com.github.ithildir.airbot.server.api.ai.ApiAiHandler;
-import com.github.ithildir.airbot.server.api.ai.GetAirQualityApiAiFulfillmentBuilder;
 import com.github.ithildir.airbot.service.GeoService;
 import com.github.ithildir.airbot.service.MeasurementService;
 import com.github.ithildir.airbot.service.UserService;
+import com.github.ithildir.airbot.util.AirQualityMessageBuilder;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.core.AbstractVerticle;
@@ -98,19 +99,19 @@ public class AirBotVerticle extends AbstractVerticle {
 		Map<String, MeasurementService> measurementServices = new HashMap<>();
 
 		measurementServices.put(
+			"US", MeasurementService.getInstance(vertx, "US"));
+		measurementServices.put(
 			null, MeasurementService.getInstance(vertx, null));
 
-		for (String country : _MEASUREMENT_SERVICE_COUNTRIES) {
-			measurementServices.put(
-				country, MeasurementService.getInstance(vertx, country));
-		}
+		AirQualityMessageBuilder airQualityMessageBuilder =
+			new AirQualityMessageBuilder(measurementServices);
 
 		UserService userService = UserService.getInstance(vertx);
 
 		route.handler(
 			new ApiAiHandler(
-				new GetAirQualityApiAiFulfillmentBuilder(
-					geoService, measurementServices, userService)));
+				new AirQualityApiAiFulfillmentBuilder(
+					airQualityMessageBuilder, geoService, userService)));
 	}
 
 	private Future<String> _deployVerticle(Class<? extends Verticle> clazz) {
@@ -154,8 +155,6 @@ public class AirBotVerticle extends AbstractVerticle {
 	}
 
 	private static final int _DEFAULT_PORT = 8080;
-
-	private static final String[] _MEASUREMENT_SERVICE_COUNTRIES = {"US"};
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		AirBotVerticle.class);
