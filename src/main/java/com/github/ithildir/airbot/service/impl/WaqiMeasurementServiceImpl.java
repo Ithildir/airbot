@@ -93,6 +93,11 @@ public class WaqiMeasurementServiceImpl implements MeasurementService {
 	}
 
 	@Override
+	public void getName(Handler<AsyncResult<String>> handler) {
+		handler.handle(Future.succeededFuture("aqicn"));
+	}
+
+	@Override
 	public void init(Handler<AsyncResult<Void>> handler) {
 		handler.handle(Future.succeededFuture());
 	}

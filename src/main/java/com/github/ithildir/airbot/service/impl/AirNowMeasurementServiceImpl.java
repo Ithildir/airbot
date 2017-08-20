@@ -89,6 +89,11 @@ public class AirNowMeasurementServiceImpl implements MeasurementService {
 	}
 
 	@Override
+	public void getName(Handler<AsyncResult<String>> handler) {
+		handler.handle(Future.succeededFuture("airnow"));
+	}
+
+	@Override
 	public void init(Handler<AsyncResult<Void>> handler) {
 		if (StringUtils.isBlank(_reportingAreaETag)) {
 			_initReportingAreaRecords(handler);
