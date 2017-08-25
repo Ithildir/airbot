@@ -154,9 +154,9 @@ public class AirQualityMessageBuilder {
 
 		return LanguageUtil.format(
 			locale,
-			"according-to-x-the-air-quality-in-x-was-x-x,-with-x-as-main-" +
+			"according-to-x-the-air-quality-in-x--x-was-x,-with-x-as-main-" +
 				"pollutant",
-			name, locationString, aqiLevel, time, mainPollutant);
+			name, locationString, time, aqiLevel, mainPollutant);
 	}
 
 	private final Map<String, MeasurementService> _measurementServices;
